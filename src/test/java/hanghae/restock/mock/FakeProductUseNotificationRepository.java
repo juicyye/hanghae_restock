@@ -14,9 +14,9 @@ public class FakeProductUseNotificationRepository implements ProductUserNotifica
 
     @Override
     public void save(ProductUserNotification domain) {
-        if(domain.getId() == null || domain.getId() == 0) {
+        if(domain.getId() == null || domain.getId().equals(0L)) {
             ProductUserNotification newDomain = new ProductUserNotification(
-                    domain.getId(), domain.getProductId(), domain.getUserId(),
+                    counter.getAndIncrement(), domain.getProductId(), domain.getUserId(),
                     domain.getActiveStatus(), domain.getCreatedAt(), domain.getUpdatedAt()
             );
             data.add(newDomain);
