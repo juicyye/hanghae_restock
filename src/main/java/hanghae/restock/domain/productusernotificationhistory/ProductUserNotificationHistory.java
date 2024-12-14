@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProductUserNotificationHistory implements Comparable<ProductUserNotificationHistory> {
+public class ProductUserNotificationHistory {
     private Long id;
     private Long productId;
     private Long userId;
@@ -23,8 +23,4 @@ public class ProductUserNotificationHistory implements Comparable<ProductUserNot
         );
     }
 
-    @Override
-    public int compareTo(ProductUserNotificationHistory o) {
-        return o.getNotificationDate().compareTo(notificationDate);
-    }
 }

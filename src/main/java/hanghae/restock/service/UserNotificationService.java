@@ -18,6 +18,10 @@ public class UserNotificationService {
     private final LocalDateTimeHolder localDateTimeHolder;
     private final UserService userService;
 
+    /**
+     * 상품 재입고 알림을 신청한 유저들을 찾는다
+     * 재입고 유저정보를 저장한다
+     */
     public void processNotification(Long productId, Long restockPhase) {
         List<ProductUserNotification> users = userService.getActiveProductNotifiers(productId);
         users.forEach(i -> history.computeIfAbsent(restockPhase, k ->
@@ -30,6 +34,9 @@ public class UserNotificationService {
         );
     }
 
+    /**
+     * 마지막으로 저장한 유저 Id를 반환한다
+     */
     public Long getLastNotificationUserId(Long productId, Long restockPhase) {
         return Objects.requireNonNull(history.get(restockPhase)
                         .stream()
