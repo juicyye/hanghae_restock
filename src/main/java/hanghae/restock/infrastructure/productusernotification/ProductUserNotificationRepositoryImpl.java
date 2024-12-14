@@ -1,5 +1,6 @@
 package hanghae.restock.infrastructure.productusernotification;
 
+import hanghae.restock.domain.productusernotification.ActiveStatus;
 import hanghae.restock.domain.productusernotification.ProductUserNotification;
 import hanghae.restock.service.port.ProductUserNotificationRepository;
 import java.util.List;
@@ -18,7 +19,7 @@ public class ProductUserNotificationRepositoryImpl implements ProductUserNotific
 
     @Override
     public List<ProductUserNotification> findAllProductNotiActive(Long productId) {
-        return jpaRepository.findActiveNotifiedUsersForProduct(productId).stream()
+        return jpaRepository.findActiveNotifiedUsersForProduct(productId, ActiveStatus.ACTIVATE).stream()
                 .map(ProductUserNotificationEntity::toModel).toList();
     }
 
