@@ -16,10 +16,11 @@ class UserServiceTest {
 
     private UserService userService;
     private FakeLocalDateTimeHolder localDateTimeHolder;
+    private FakeProductUseNotificationRepository repository;
 
     @BeforeEach
     void setUp() {
-        FakeProductUseNotificationRepository repository = new FakeProductUseNotificationRepository();
+        repository = new FakeProductUseNotificationRepository();
         localDateTimeHolder = new FakeLocalDateTimeHolder(LocalDateTime.now());
         userService = new UserService(repository, localDateTimeHolder);
     }
@@ -33,7 +34,7 @@ class UserServiceTest {
 
         // when
         userService.addNotification(productId, userId);
-        List<ProductUserNotification> results = userService.getActiveProductNotifiers(productId);
+        List<ProductUserNotification> results = repository.findAllProductNotiActive(productId);
 
         // then
         assertThat(results).hasSize(1)
