@@ -16,6 +16,9 @@ public class UserService {
     private final ProductUserNotificationRepository productUserNotificationRepository;
     private final LocalDateTimeHolder localDateTimeHolder;
 
+    /**
+     * 상품 재입고 알림을 신청한다
+     */
     public void addNotification(Long productId, Long userId) {
         LocalDateTime currentDate = localDateTimeHolder.getCurrentDate();
         ProductUserNotification productUserNotification = ProductUserNotification.create(productId, userId,
@@ -24,6 +27,9 @@ public class UserService {
         productUserNotificationRepository.save(productUserNotification);
     }
 
+    /**
+     * 상품 재입고 알림이 활성화된 유저를 가져온다
+     */
     public List<ProductUserNotification> getActiveProductNotifiers(Long productId) {
         return productUserNotificationRepository.findAllProductNotiActive(productId);
     }

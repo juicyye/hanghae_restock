@@ -1,0 +1,37 @@
+package hanghae.restock.mock;
+
+import hanghae.restock.domain.productusernotification.ActiveStatus;
+import hanghae.restock.domain.productusernotification.ProductUserNotification;
+import hanghae.restock.service.port.ProductUserNotificationRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+
+public class FakeProductUseNotificationRepository implements ProductUserNotificationRepository {
+    private List<ProductUserNotification> data = new ArrayList<>();
+    private AtomicLong counter = new AtomicLong();
+
+    @Override
+    public void save(ProductUserNotification domain) {
+        if(domain.getId() == null || domain.getId() == 0) {
+            ProductUserNotification newDomain = new ProductUserNotification(
+                    domain.getId(), domain.getProductId(), domain.getUserId(),
+                    domain.getActiveStatus(), domain.getCreatedAt(), domain.getUpdatedAt()
+            );
+            data.add(newDomain);
+        } else{
+            data.removeIf(i -> Objects.equals(domain.getId(), i.getId()));
+            data.add(domain);
+        }
+
+    }
+
+    @Override
+    public List<ProductUserNotification> findAllProductNotiActive(Long productId) {
+        return data.stream()
+                .filter(i -> i.getProductId().equals(productId))
+                .filter(i -> i.getActiveStatus().equals(ActiveStatus.ACTIVATE))
+                .toList();
+    }
+}
