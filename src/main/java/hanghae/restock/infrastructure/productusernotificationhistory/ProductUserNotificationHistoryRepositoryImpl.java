@@ -2,6 +2,7 @@ package hanghae.restock.infrastructure.productusernotificationhistory;
 
 import hanghae.restock.domain.productusernotificationhistory.ProductUserNotificationHistory;
 import hanghae.restock.service.port.ProductUserNotificationHistoryRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,9 @@ public class ProductUserNotificationHistoryRepositoryImpl implements ProductUser
     private final ProductUserNotificationHistoryJpaRepository jpaRepository;
 
     @Override
-    public void save(ProductUserNotificationHistory domain) {
-        jpaRepository.save(ProductUserNotificationHistoryEntity.fromModel(domain));
+    public void save(List<ProductUserNotificationHistory> histories) {
+        List<ProductUserNotificationHistoryEntity> entities = histories.stream()
+                .map(ProductUserNotificationHistoryEntity::fromModel).toList();
+        jpaRepository.saveAll(entities);
     }
 }

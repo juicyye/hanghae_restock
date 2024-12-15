@@ -1,11 +1,10 @@
 package hanghae.restock.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import hanghae.restock.domain.productusernotification.ProductUserNotification;
 import hanghae.restock.mock.FakeLocalDateTimeHolder;
-import hanghae.restock.mock.FakeProductUseNotificationRepository;
+import hanghae.restock.mock.FakeProductUserNotificationRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +15,11 @@ class UserServiceTest {
 
     private UserService userService;
     private FakeLocalDateTimeHolder localDateTimeHolder;
-    private FakeProductUseNotificationRepository repository;
+    private FakeProductUserNotificationRepository repository;
 
     @BeforeEach
     void setUp() {
-        repository = new FakeProductUseNotificationRepository();
+        repository = new FakeProductUserNotificationRepository();
         localDateTimeHolder = new FakeLocalDateTimeHolder(LocalDateTime.now());
         userService = new UserService(repository, localDateTimeHolder);
     }

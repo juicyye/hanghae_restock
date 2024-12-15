@@ -12,4 +12,14 @@ public class Product {
     private Long id;
     private Long restockPhase;
     private StockStatus stockStatus;
+
+    public void addRestockPhase(){
+        this.restockPhase++;
+    }
+
+    public boolean availableStockNotification(){
+        return stockStatus.equals(StockStatus.IN_STOCK);
+    }
+
+
 }
