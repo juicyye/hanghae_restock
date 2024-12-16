@@ -13,8 +13,8 @@ public interface ProductUserNotificationJpaRepository extends
             select pun from ProductUserNotificationEntity pun
             where pun.productId = :productId
             and pun.activeStatus = :activeStatus
-            and pun.id < :cursor
-            order by pun.id desc
+            and pun.id >= :cursor
+            order by pun.id asc
             limit :size
             """)
     List<ProductUserNotificationEntity> findActiveNotifiedUsersForProduct(@Param("productId") Long productId,

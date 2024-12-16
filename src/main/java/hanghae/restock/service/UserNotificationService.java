@@ -44,7 +44,7 @@ public class UserNotificationService {
      * 유저 알림 정보에 알림들을 저장한다
      * cursor기반 페이지네이션, 가져온 페이지의 사이즈가 500이 되면 반복하고 안되면 안한다
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = NotificationException.class)
     public void processNotification(Product product, long cursor) {
         Long restockPhase = product.getRestockPhase();
         Long productId = product.getId();
@@ -59,7 +59,7 @@ public class UserNotificationService {
                 }
             }
             size = users.size();
-            cursor = users.get(size - 1).getId();
+            cursor = users.get(size - 1).getId() + 1;
         }
     }
 

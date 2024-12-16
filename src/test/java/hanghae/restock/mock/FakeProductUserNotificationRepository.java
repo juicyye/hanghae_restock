@@ -4,6 +4,7 @@ import hanghae.restock.domain.productusernotification.ActiveStatus;
 import hanghae.restock.domain.productusernotification.ProductUserNotification;
 import hanghae.restock.service.port.ProductUserNotificationRepository;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
@@ -33,7 +34,8 @@ public class FakeProductUserNotificationRepository implements ProductUserNotific
         return data.stream()
                 .filter(i -> i.getProductId().equals(productId))
                 .filter(i -> i.getActiveStatus().equals(ActiveStatus.ACTIVATE))
-                .filter(i -> i.getId() <= cursor)
+                .sorted(Comparator.comparing(ProductUserNotification::getId))
+                .filter(i -> i.getId() >= cursor)
                 .limit(size)
                 .toList();
     }
