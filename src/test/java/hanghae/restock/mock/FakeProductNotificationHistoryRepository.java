@@ -1,6 +1,5 @@
 package hanghae.restock.mock;
 
-import hanghae.restock.domain.product.Product;
 import hanghae.restock.domain.productnotificationhistory.ProductNotificationHistory;
 import hanghae.restock.service.port.ProductNotificationHistoryRepository;
 import java.util.ArrayList;
@@ -24,5 +23,9 @@ public class FakeProductNotificationHistoryRepository implements ProductNotifica
             data.removeIf(i -> Objects.equals(domain.getId(), i.getId()));
             data.add(domain);
         }
+    }
+
+    public ProductNotificationHistory findById(Long id) {
+        return data.stream().filter(i -> i.getId().equals(id)).findFirst().orElse(null);
     }
 }
