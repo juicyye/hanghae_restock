@@ -34,7 +34,7 @@ public class ProductService {
     }
 
     /**
-     * 상품과 상품알림 정보를 DB에 저장한다
+     * 상품알림 정보를 DB에 저장한다
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void addNotificationHistory(ProductNotificationHistory productNotificationHistory) {
