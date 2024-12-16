@@ -48,13 +48,28 @@ public class RestockFacade {
         } catch (NotificationException e) {
             productNotificationHistory.updateNotification(RestockNotificationStatus.CANCELED_BY_SOLD_OUT, lastUserId);
         } catch (IllegalArgumentException e) {
-            productNotificationHistory.updateNotification(RestockNotificationStatus.CANCELED_BY_ERROR, lastUserId);
+            handleNotificationError(productNotificationHistory, lastUserId);
         } finally {
-            productService.addNotificationHistory(productNotificationHistory);
-            userNotificationService.saveRestockHistory(productId);
-            clearData(productId);
+            addToDBAndClear(productId, productNotificationHistory);
         }
 
+    }
+
+    /**
+     * todo 알림 에러 발생 시 처리 로직
+     */
+
+    private void handleNotificationError(ProductNotificationHistory productNotificationHistory, Long lastUserId) {
+        productNotificationHistory.updateNotification(RestockNotificationStatus.CANCELED_BY_ERROR, lastUserId);
+    }
+
+    /**
+     * 알림 정보들을 DB에 저장하고 캐시삭제
+     */
+    private void addToDBAndClear(Long productId, ProductNotificationHistory productNotificationHistory) {
+        productService.addNotificationHistory(productNotificationHistory);
+        userNotificationService.saveRestockHistory(productId);
+        clearData(productId);
     }
 
     /**
