@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class FakeProductUseNotificationRepository implements ProductUserNotificationRepository {
+public class FakeProductUserNotificationRepository implements ProductUserNotificationRepository {
     private List<ProductUserNotification> data = new ArrayList<>();
     private AtomicLong counter = new AtomicLong();
 
