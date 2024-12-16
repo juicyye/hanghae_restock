@@ -30,8 +30,8 @@ public class UserNotificationService {
     /**
      * 마지막으로 저장한 유저 Id를 반환한다
      */
-    public Long getLastNotificationUserId(Long restockPhase) {
-        return history.get(restockPhase)
+    public Long getLastNotificationUserId(Long productId) {
+        return history.get(productId)
                 .stream()
                 .max(ProductUserNotificationHistory::compareTo)
                 .map(ProductUserNotificationHistory::getUserId)
@@ -76,10 +76,11 @@ public class UserNotificationService {
      * DB에 ProductUserNotificationHistory을 저장한다
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void saveRestockHistory(Long stockPhase) {
-        List<ProductUserNotificationHistory> histories = history.get(stockPhase);
+    public void saveRestockHistory(Long productId) {
+        List<ProductUserNotificationHistory> histories = history.get(productId);
+        if (histories == null || histories.isEmpty()) return;
         productUserNotificationHistoryRepository.save(histories);
-        history.remove(stockPhase);
+        history.remove(productId);
     }
 
 }

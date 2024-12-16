@@ -4,7 +4,6 @@ import hanghae.restock.domain.product.Product;
 import hanghae.restock.domain.productnotificationhistory.ProductNotificationHistory;
 import hanghae.restock.domain.productnotificationhistory.RestockNotificationStatus;
 import hanghae.restock.service.common.util.NotificationException;
-import hanghae.restock.service.port.ProductNotificationHistoryRepository;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class RestockFacade {
 
-    private final Map<Long, Product> productStatus = new ConcurrentHashMap<>();
     private final Map<Long, ProductNotificationHistory> history = new ConcurrentHashMap<>();
     private final ProductService productService;
     private final UserNotificationService userNotificationService;
@@ -29,22 +27,22 @@ public class RestockFacade {
         Product product = productService.handleRestock(productId);
         Long restockPhase = product.getRestockPhase();
 
-        productStatus.put(restockPhase, product);
-        history.computeIfAbsent(restockPhase,
+        history.computeIfAbsent(productId,
                 k -> ProductNotificationHistory.create(productId, restockPhase, RestockNotificationStatus.IN_PROGRESS));
 
-        executeUserNotification(restockPhase);
+        executeUserNotification(productId, restockPhase);
     }
 
     /**
      * 유저에게 알림을 보낸다
      */
-    private void executeUserNotification(Long restockPhase) {
+    private void executeUserNotification(Long productId, Long restockPhase) {
         Long lastUserId = null;
-        ProductNotificationHistory productNotificationHistory = history.get(restockPhase);
+        ProductNotificationHistory productNotificationHistory = history.get(productId);
 
         try {
-            userNotificationService.processNotification(productStatus.get(restockPhase));
+            Product product = productService.getProductById(productId);
+            userNotificationService.processNotification(product);
             lastUserId = userNotificationService.getLastNotificationUserId(restockPhase);
             productNotificationHistory.updateNotification(RestockNotificationStatus.COMPLETED, lastUserId);
         } catch (NotificationException e) {
@@ -53,15 +51,19 @@ public class RestockFacade {
             productNotificationHistory.updateNotification(RestockNotificationStatus.CANCELED_BY_ERROR, lastUserId);
         } finally {
             productService.addNotificationHistory(productNotificationHistory);
-            userNotificationService.saveRestockHistory(restockPhase);
-            clearData(restockPhase);
+            userNotificationService.saveRestockHistory(productId);
+            clearData(productId);
         }
 
     }
 
-    private void clearData(Long restockPhase) {
-        productStatus.remove(restockPhase);
-        history.remove(restockPhase);
+    /**
+     * 캐시에 저장된 데이터를 지운다
+     */
+
+    private void clearData(Long productId) {
+        productService.clearData(productId);
+        history.remove(productId);
     }
 
 

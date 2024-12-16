@@ -21,5 +21,9 @@ public class Product {
         return stockStatus.equals(StockStatus.IN_STOCK);
     }
 
+    public void updateStockStatus(StockStatus stockStatus){
+        this.stockStatus = stockStatus;
+    }
+
 
 }
