@@ -18,11 +18,6 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void processRestock(Long productId, StockStatus stockStatus, int restockPhase) {
-        jpaRepository.updateRestockData(productId, stockStatus, restockPhase);
-    }
-
-    @Override
     public Optional<Product> findById(Long productId) {
         return jpaRepository.findById(productId).map(ProductEntity::toModel);
     }

@@ -11,10 +11,8 @@ import hanghae.restock.service.port.LocalDateTimeHolder;
 import hanghae.restock.service.port.ProductUserNotificationHistoryRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,12 +31,12 @@ public class UserNotificationService {
      * 마지막으로 저장한 유저 Id를 반환한다
      */
     public Long getLastNotificationUserId(Long restockPhase) {
-        return Objects.requireNonNull(Objects.requireNonNull(history.get(restockPhase)
+        return history.get(restockPhase)
                 .stream()
-                .max(Comparator.comparing(ProductUserNotificationHistory::getNotificationDate))
+                .max(ProductUserNotificationHistory::compareTo)
                 .map(ProductUserNotificationHistory::getUserId)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_USER_NOTI_HISTORY.getMessage())))
-        );
+                .orElseThrow(() -> new IllegalArgumentException(NOT_FOUND_USER_NOTI_HISTORY.getMessage())
+                );
     }
 
     /**

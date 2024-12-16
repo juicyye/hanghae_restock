@@ -22,6 +22,9 @@ public class RestockFacade {
     private final UserNotificationService userNotificationService;
 
 
+    /**
+     * 리스탁을 진행한다
+     */
     public void handleRestockProcess(Long productId) {
         Product product = productService.handleRestock(productId);
         Long restockPhase = product.getRestockPhase();
@@ -33,6 +36,9 @@ public class RestockFacade {
         executeUserNotification(restockPhase);
     }
 
+    /**
+     * 유저에게 알림을 보낸다
+     */
     private void executeUserNotification(Long restockPhase) {
         Long lastUserId = null;
         ProductNotificationHistory productNotificationHistory = history.get(restockPhase);

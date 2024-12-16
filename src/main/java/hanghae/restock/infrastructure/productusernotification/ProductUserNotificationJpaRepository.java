@@ -9,7 +9,10 @@ import org.springframework.data.repository.query.Param;
 public interface ProductUserNotificationJpaRepository extends
         JpaRepository<ProductUserNotificationEntity, Long> {
 
-    @Query("select pun from ProductUserNotificationEntity pun where pun.productId = :productId and pun.activeStatus = :activeStatus")
+    @Query("select pun from ProductUserNotificationEntity pun where pun.productId = :productId and pun.activeStatus = :activeStatus "
+            + "order by pun.updatedAt desc")
     List<ProductUserNotificationEntity> findActiveNotifiedUsersForProduct(@Param("productId") Long productId,
                                                                           @Param("activeStatus") ActiveStatus activeStatus);
+
+
 }
