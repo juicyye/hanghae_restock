@@ -77,6 +77,7 @@ public class RestockFacade {
 
     private void clearData(Long productId) {
         productService.clearData(productId);
+        userNotificationService.clearData(productId);
         history.remove(productId);
     }
 

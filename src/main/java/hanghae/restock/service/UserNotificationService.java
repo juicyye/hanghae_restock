@@ -84,4 +84,8 @@ public class UserNotificationService {
         );
     }
 
+    public void clearData(Long productId) {
+        history.remove(productId);
+    }
+
 }
