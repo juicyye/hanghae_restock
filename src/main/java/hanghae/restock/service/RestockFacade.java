@@ -42,7 +42,7 @@ public class RestockFacade {
 
         try {
             Product product = productService.getProductById(productId);
-            userNotificationService.processNotification(product);
+            userNotificationService.processNotification(product, 0L);
             lastUserId = userNotificationService.getLastNotificationUserId(restockPhase);
             productNotificationHistory.updateNotification(RestockNotificationStatus.COMPLETED, lastUserId);
         } catch (NotificationException e) {

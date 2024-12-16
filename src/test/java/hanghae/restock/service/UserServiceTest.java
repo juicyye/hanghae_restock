@@ -2,6 +2,7 @@ package hanghae.restock.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import hanghae.restock.domain.productusernotification.ActiveStatus;
 import hanghae.restock.domain.productusernotification.ProductUserNotification;
 import hanghae.restock.mock.FakeLocalDateTimeHolder;
 import hanghae.restock.mock.FakeProductUserNotificationRepository;
@@ -33,7 +34,7 @@ class UserServiceTest {
 
         // when
         userService.addNotification(productId, userId);
-        List<ProductUserNotification> results = repository.findAllProductNotiActive(productId);
+        List<ProductUserNotification> results = repository.findAllProductNotification(productId,0,10, ActiveStatus.ACTIVATE);
 
         // then
         assertThat(results).hasSize(1)

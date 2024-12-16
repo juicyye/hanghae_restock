@@ -41,7 +41,7 @@ class UserNotificationServiceTest {
         Product product = new Product(1L, 0L, StockStatus.IN_STOCK);
 
         // when
-        userNotificationService.processNotification(product);
+        userNotificationService.processNotification(product, 0L);
         Long result = userNotificationService.getLastNotificationUserId(0L);
 
         // then
@@ -53,10 +53,9 @@ class UserNotificationServiceTest {
     void saveRestockHistory() throws Exception {
         // given
         Product product = new Product(1L, 0L, StockStatus.IN_STOCK);
-        userNotificationService.processNotification(product);
+        userNotificationService.processNotification(product, 0L);
 
         // when
-        userNotificationService.saveRestockHistory(0L);
         List<ProductUserNotificationHistory> results = userHistoryRepository.getData();
 
         // then

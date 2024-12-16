@@ -11,20 +11,17 @@ public class FakeProductUserNotificationHistoryRepository implements ProductUser
     private List<ProductUserNotificationHistory> data = new ArrayList<>();
     private AtomicLong counter = new AtomicLong();
 
-
     @Override
-    public void save(List<ProductUserNotificationHistory> productUserNotificationHistory) {
-        for (ProductUserNotificationHistory domain : productUserNotificationHistory) {
-            if (domain.getId() == null || domain.getId().equals(0L)) {
-                ProductUserNotificationHistory newDomain = new ProductUserNotificationHistory(
-                        counter.getAndIncrement(), domain.getProductId(), domain.getUserId(),
-                        domain.getRestockPhase(), domain.getNotificationDate()
-                );
-                data.add(newDomain);
-            } else {
-                data.removeIf(i -> Objects.equals(domain.getId(), i.getId()));
-                data.add(domain);
-            }
+    public void save(ProductUserNotificationHistory domain) {
+        if (domain.getId() == null || domain.getId().equals(0L)) {
+            ProductUserNotificationHistory newDomain = new ProductUserNotificationHistory(
+                    counter.getAndIncrement(), domain.getProductId(), domain.getUserId(),
+                    domain.getRestockPhase(), domain.getNotificationDate()
+            );
+            data.add(newDomain);
+        } else {
+            data.removeIf(i -> Objects.equals(domain.getId(), i.getId()));
+            data.add(domain);
         }
     }
 

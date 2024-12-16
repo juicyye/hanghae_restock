@@ -45,12 +45,10 @@ public class UserNotificationService {
      * cursor기반 페이지네이션, 가져온 페이지의 사이즈가 500이 되면 반복하고 안되면 안한다
      */
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void processNotification(Product product) {
+    public void processNotification(Product product, long cursor) {
         Long restockPhase = product.getRestockPhase();
         Long productId = product.getId();
         int size = SIZE;
-        long cursor = 0;
-
         while (size == SIZE) {
             List<ProductUserNotification> users = userService.getActiveProductNotifiers(productId, cursor, SIZE);
             for (ProductUserNotification user : users) {
@@ -60,17 +58,20 @@ public class UserNotificationService {
                     throw new NotificationException(ErrorMessage.OUT_OF_STOCK.getMessage());
                 }
             }
-
-            saveRestockHistory(productId);
             size = users.size();
             cursor = users.get(size - 1).getId();
         }
     }
 
+    /**
+     * DB에 ProductUserNotificationHistory을 저장한다
+     */
     private void addRestockHistory(ProductUserNotification user, Long restockPhase, Long productId) {
+        ProductUserNotificationHistory userNotiHistory = createHistory(productId, user.getUserId(), restockPhase,
+                localDateTimeHolder.getCurrentDate());
         history.computeIfAbsent(restockPhase, k ->
-                new ArrayList<>()).add(createHistory(productId, user.getUserId(), restockPhase,
-                localDateTimeHolder.getCurrentDate()));
+                new ArrayList<>()).add(userNotiHistory);
+        productUserNotificationHistoryRepository.save(userNotiHistory);
     }
 
     /**
@@ -81,19 +82,6 @@ public class UserNotificationService {
         return ProductUserNotificationHistory.create(
                 productId, userId, restockPhase, mostRecentDate
         );
-    }
-
-    /**
-     * DB에 ProductUserNotificationHistory을 저장한다
-     */
-
-    public void saveRestockHistory(Long productId) {
-        List<ProductUserNotificationHistory> histories = history.get(productId);
-        if (histories == null || histories.isEmpty()) {
-            return;
-        }
-        productUserNotificationHistoryRepository.save(histories);
-        history.remove(productId);
     }
 
 }

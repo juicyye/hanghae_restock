@@ -33,7 +33,7 @@ public class FakeProductUserNotificationRepository implements ProductUserNotific
         return data.stream()
                 .filter(i -> i.getProductId().equals(productId))
                 .filter(i -> i.getActiveStatus().equals(ActiveStatus.ACTIVATE))
-                .filter(i -> i.getId() < cursor)
+                .filter(i -> i.getId() <= cursor)
                 .limit(size)
                 .toList();
     }
