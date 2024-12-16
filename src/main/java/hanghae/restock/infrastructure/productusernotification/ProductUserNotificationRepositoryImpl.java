@@ -18,8 +18,8 @@ public class ProductUserNotificationRepositoryImpl implements ProductUserNotific
     }
 
     @Override
-    public List<ProductUserNotification> findAllProductNotiActive(Long productId) {
-        return jpaRepository.findActiveNotifiedUsersForProduct(productId, ActiveStatus.ACTIVATE).stream()
+    public List<ProductUserNotification> findAllProductNotification(Long productId, long cursor, int size, ActiveStatus activeStatus) {
+        return jpaRepository.findActiveNotifiedUsersForProduct(productId, activeStatus, cursor, size).stream()
                 .map(ProductUserNotificationEntity::toModel).toList();
     }
 

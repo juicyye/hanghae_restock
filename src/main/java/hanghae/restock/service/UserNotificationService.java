@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class UserNotificationService {
+    private static final int SIZE = 500;
     private final Map<Long, List<ProductUserNotificationHistory>> history = new ConcurrentHashMap<>();
     private final UserService userService;
     private final LocalDateTimeHolder localDateTimeHolder;
@@ -41,18 +42,28 @@ public class UserNotificationService {
 
     /**
      * 유저 알림 정보에 알림들을 저장한다
+     * cursor기반 페이지네이션, 가져온 페이지의 사이즈가 500이 되면 반복하고 안되면 안한다
      */
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void processNotification(Product product) {
         Long restockPhase = product.getRestockPhase();
         Long productId = product.getId();
-        List<ProductUserNotification> users = userService.getActiveProductNotifiers(productId);
+        int size = SIZE;
+        long cursor = 0;
 
-        for (ProductUserNotification user : users) {
-            if (product.availableStockNotification()) {
-                addRestockHistory(user, restockPhase, productId);
-            } else {
-                throw new NotificationException(ErrorMessage.OUT_OF_STOCK.getMessage());
+        while (size == SIZE) {
+            List<ProductUserNotification> users = userService.getActiveProductNotifiers(productId, cursor, SIZE);
+            for (ProductUserNotification user : users) {
+                if (product.availableStockNotification()) {
+                    addRestockHistory(user, restockPhase, productId);
+                } else {
+                    throw new NotificationException(ErrorMessage.OUT_OF_STOCK.getMessage());
+                }
             }
+
+            saveRestockHistory(productId);
+            size = users.size();
+            cursor = users.get(size - 1).getId();
         }
     }
 
@@ -75,10 +86,12 @@ public class UserNotificationService {
     /**
      * DB에 ProductUserNotificationHistory을 저장한다
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+
     public void saveRestockHistory(Long productId) {
         List<ProductUserNotificationHistory> histories = history.get(productId);
-        if (histories == null || histories.isEmpty()) return;
+        if (histories == null || histories.isEmpty()) {
+            return;
+        }
         productUserNotificationHistoryRepository.save(histories);
         history.remove(productId);
     }

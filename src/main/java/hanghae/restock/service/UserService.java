@@ -30,7 +30,7 @@ public class UserService {
     /**
      * 상품 재입고 알림이 활성화된 유저를 가져온다
      */
-    public List<ProductUserNotification> getActiveProductNotifiers(Long productId) {
-        return productUserNotificationRepository.findAllProductNotiActive(productId);
+    public List<ProductUserNotification> getActiveProductNotifiers(Long productId, long cursor, int size) {
+        return productUserNotificationRepository.findAllProductNotification(productId, cursor, size, ActiveStatus.ACTIVATE);
     }
 }

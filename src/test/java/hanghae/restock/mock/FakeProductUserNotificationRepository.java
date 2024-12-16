@@ -28,10 +28,14 @@ public class FakeProductUserNotificationRepository implements ProductUserNotific
     }
 
     @Override
-    public List<ProductUserNotification> findAllProductNotiActive(Long productId) {
+    public List<ProductUserNotification> findAllProductNotification(Long productId, long cursor, int size,
+                                                                    ActiveStatus activeStatus) {
         return data.stream()
                 .filter(i -> i.getProductId().equals(productId))
                 .filter(i -> i.getActiveStatus().equals(ActiveStatus.ACTIVATE))
+                .filter(i -> i.getId() < cursor)
+                .limit(size)
                 .toList();
     }
+
 }

@@ -68,7 +68,6 @@ public class RestockFacade {
      */
     private void addToDBAndClear(Long productId, ProductNotificationHistory productNotificationHistory) {
         productService.addNotificationHistory(productNotificationHistory);
-        userNotificationService.saveRestockHistory(productId);
         clearData(productId);
     }
 
