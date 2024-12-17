@@ -50,7 +50,8 @@ public class RestockFacade {
         } catch (IllegalArgumentException e) {
             handleNotificationError(productNotificationHistory, lastUserId);
         } finally {
-            addToDBAndClear(productId, productNotificationHistory);
+            addToDB(productNotificationHistory);
+            clearData(productId);
         }
 
     }
@@ -64,11 +65,10 @@ public class RestockFacade {
     }
 
     /**
-     * 알림 정보들을 DB에 저장하고 캐시삭제
+     * 알림 정보들을 DB에 저장한다
      */
-    private void addToDBAndClear(Long productId, ProductNotificationHistory productNotificationHistory) {
+    private void addToDB(ProductNotificationHistory productNotificationHistory) {
         productService.addNotificationHistory(productNotificationHistory);
-        clearData(productId);
     }
 
     /**
