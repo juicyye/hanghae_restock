@@ -41,4 +41,3 @@
   - 애초에 알림이 끝나야 정확한 정보가 들어갈 것이고, 예외가 발생하더라도 마지막 정보만 들어가도록 설정하면 될 것이라고 생각했습니다.
 - processNotification이 `@Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = NotificationException.class)`인 이유
   - 유저 100까지는 재고가 있다가 101부터 재고가 없다고 한다면 100까지는 저장이 되도록 하고 예외를 발생해 알림 정보에 취소를 저장하도록 했습니다.
-  - `propagation = Propagation.REQUIRES_NEW`을 꼭 적을 필요는 없다고 생각하지만 (하나의 트랜잭션을 사용하지는 않아서) 독립적으로 실행된다는 걸 명시적으로 알려주고 싶었습니다.
